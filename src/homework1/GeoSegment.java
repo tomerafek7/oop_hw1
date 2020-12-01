@@ -41,17 +41,40 @@ package homework1;
  **/
 public class GeoSegment  {
 
-	
-  	// TODO Write abstraction function and representation invariant
-	
-	
+
+	/** Abs. Function:
+	 * Represents a segment of two points on earth. holds the two endpoints, the distance between them and the
+	 * compass heading from the first to the second.
+	 */
+
+	/** Rep. Invariant:
+	 * both end-points are not null
+	 * name is not null
+	 * 0 <= heading < 360
+	 * length >=0
+	 */
+
+
+	final String name;
+	final GeoPoint p1;
+	final GeoPoint p2;
+	final double length;
+	final double heading;
+
+
   	/**
      * Constructs a new GeoSegment with the specified name and endpoints.
      * @requires name != null && p1 != null && p2 != null
      * @effects constructs a new GeoSegment with the specified name and endpoints.
      **/
   	public GeoSegment(String name, GeoPoint p1, GeoPoint p2) {
-  		// TODO Implement this method
+  		assert name != null && p1 != null && p2 != null: "Can't build GeoSegment: one (or more) input/s are null";
+  		this.name = name;
+  		this.p1 = p1;
+  		this.p2 = p2;
+  		this.length = p1.distanceTo(p2);
+  		this.heading = p1.headingTo(p2);
+  		 this.checkRep();
   	}
 
 
@@ -61,7 +84,8 @@ public class GeoSegment  {
      *         && gs.p1 = this.p2 && gs.p2 = this.p1
      **/
   	public GeoSegment reverse() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return new GeoSegment(this.name, this.p2, this.p1);
   	}
 
 
@@ -70,7 +94,8 @@ public class GeoSegment  {
      * @return the name of this GeoSegment.
      */
   	public String getName() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return this.name;
   	}
 
 
@@ -79,7 +104,8 @@ public class GeoSegment  {
      * @return first endpoint of the segment.
      */
   	public GeoPoint getP1() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return this.p1;
   	}
 
 
@@ -88,7 +114,8 @@ public class GeoSegment  {
      * @return second endpoint of the segment.
      */
   	public GeoPoint getP2() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return this.p2;
   	}
 
 
@@ -98,7 +125,8 @@ public class GeoSegment  {
      *         Technion approximation.
      */
   	public double getLength() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.length;
   	}
 
 
@@ -109,7 +137,9 @@ public class GeoSegment  {
      *         flat-surface, near the Technion approximation.
      **/
   	public double getHeading() {
-  		// TODO Implement this method
+		this.checkRep();
+  		assert this.length != 0 : "Cannot return heading: length = 0";
+		return this.heading;
   	}
 
 
@@ -119,7 +149,15 @@ public class GeoSegment  {
      *         && gs.name = this.name && gs.p1 = this.p1 && gs.p2 = this.p2
    	 **/
   	public boolean equals(Object gs) {
-  		// TODO Implement this method
+		this.checkRep();
+		if (gs == null)
+			return false;
+		if (!(gs instanceof GeoSegment))
+			return false;
+		// at this point we know that gs != null and gs's type is GeoPoint
+		GeoSegment segment = (GeoSegment)gs;
+		this.checkRep();
+		return (segment.name.equals(this.name)) && (segment.p1.equals(this.p1)) && (segment.p2.equals(this.p2));
   	}
 
 
@@ -128,10 +166,7 @@ public class GeoSegment  {
      * @return a hash code value for this.
      **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it 
-    	// for improved performance. 
-
-    	return 1;
+    	return (int)(this.length + this.heading);
   	}
 
 
@@ -140,8 +175,21 @@ public class GeoSegment  {
      * @return a string representation of this.
      **/
   	public String toString() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return String.format("Geo-Segment: name: %s,\n p1: %s,\n p2: %s,\n length: %f,\n heading: %f,\n",
+				this.name,this.p1.toString(),this.p2.toString(),this.length,this.heading);
   	}
+
+	/**
+	 * Checks if the Representation Invariant is being violated.
+	 * @throws AssertionError in case it's violated.
+	 **/
+	private void checkRep() {
+		assert this.name != null && this.p1 != null && this.p2 != null &&
+				this.length >= 0 && this.heading < GeoPoint.COMPASS_NUM_DEGREES && this.heading >= 0:
+				"Rep. Invariant of GeoSegment is broken";
+	}
+
 
 }
 

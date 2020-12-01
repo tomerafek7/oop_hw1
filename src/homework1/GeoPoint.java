@@ -12,7 +12,7 @@ package homework1;
  * The Ziv square is at approximately 32 deg. 46 min. 59 sec. N
  * latitude and 35 deg. 0 min. 52 sec. E longitude. There are 60 minutes
  * per degree, and 60 seconds per minute. So, in decimal, these correspond
- * to 32.783098 North latitude and 35.014528 East longitude. The 
+ * to 32.783098 North latitude and 35.014528 East longitude. The
  * constructor takes integers in millionths of degrees. To create a new
  * GeoPoint located in the the Ziv square, use:
  * <tt>GeoPoint zivCrossroad = new GeoPoint(32783098,35014528);</tt>
@@ -53,7 +53,12 @@ public class GeoPoint {
      * "flat earth" simplification.
      */
   	public static final double KM_PER_DEGREE_LONGITUDE = 93.681;
-  	
+
+	// other constants:
+	public static final double MILLION = 1e6;
+	public static final double COMPASS_ROTATION_CONST = 90;
+	public static final double COMPASS_NUM_DEGREES = 360;
+
 	// Implementation hint:
 	// Doubles and floating point math can cause some problems. The exact
 	// value of a double can not be guaranteed except within some epsilon.
@@ -64,10 +69,18 @@ public class GeoPoint {
 	// and distance computations). Because of this, you should consider 
 	// using ints for your internal representation of GeoPoint. 
 
-  	
-  	// TODO Write abstraction function and representation invariant
-  	
-  	
+
+	/** Abs. Function:
+	 *  Represents a point on earth by latitude and longitude (in millionth of degrees)
+	 */
+
+	/** Rep. Invariant:
+	 * MIN_LATITUDE <= latitude <= MAX_LATITUDE) and
+	 * (MIN_LONGITUDE <= longitude <= MAX_LONGITUDE)
+	 */
+
+	final int latitude, longitude;
+
   	/**
   	 * Constructs GeoPoint from a latitude and longitude.
      * @requires the point given by (latitude, longitude) in millionths
@@ -78,16 +91,18 @@ public class GeoPoint {
      *          given in millionths of degrees.
    	 **/
   	public GeoPoint(int latitude, int longitude) {
-  		// TODO Implement this constructor
+  		this.latitude = latitude;
+		this.longitude = longitude;
+		this.checkRep();
   	}
 
-  	 
   	/**
      * Returns the latitude of this.
      * @return the latitude of this in millionths of degrees.
      */
   	public int getLatitude() {
-  		// TODO Implement this method
+		this.checkRep();
+  		return this.latitude;
   	}
 
 
@@ -96,9 +111,9 @@ public class GeoPoint {
      * @return the latitude of this in millionths of degrees.
      */
   	public int getLongitude() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.longitude;
   	}
-
 
   	/**
      * Computes the distance between GeoPoints.
@@ -107,9 +122,14 @@ public class GeoPoint {
      *         the Technion approximation.
      **/
   	public double distanceTo(GeoPoint gp) {
-  		// TODO Implement this method
+		this.checkRep();
+		// calc distances and convert to km :
+  		double x_dist = ((this.longitude - gp.longitude) / MILLION) * KM_PER_DEGREE_LONGITUDE;
+		double y_dist = ((this.latitude - gp.latitude) / MILLION)  * KM_PER_DEGREE_LATITUDE;
+		// return sqrt(x^2 + y^2) :
+		this.checkRep();
+		return Math.sqrt(Math.pow(x_dist,2) + Math.pow(y_dist,2));
   	}
-
 
   	/**
      * Computes the compass heading between GeoPoints.
@@ -129,8 +149,23 @@ public class GeoPoint {
 		 // degrees and degrees increase in the clockwise direction. By
 		 // mathematical convention, "east" is 0 degrees, and degrees
 		 // increase in the counterclockwise direction. 
-		 
-  		// TODO Implement this method
+		this.checkRep();
+
+		assert gp != null : "Can't calculate compass heading: input point is null";
+		assert !this.equals(gp) : "Can't calculate compass heading: points are equal";
+		// calc distances and convert to km :
+		double x_dist = ((gp.longitude - this.longitude) / MILLION) * KM_PER_DEGREE_LONGITUDE;
+		double y_dist = ((gp.latitude - this.latitude) / MILLION)  * KM_PER_DEGREE_LATITUDE;
+
+		// calc (-arctan(y,x) + 90) (the '-', '+90' are for the above conversion) :
+		double deg = Math.toDegrees(-Math.atan2(y_dist, x_dist)) + COMPASS_ROTATION_CONST;
+		if (deg < 0) deg = deg + COMPASS_NUM_DEGREES; // normalize heading to be in [0,360)
+		assert deg >= 0 && deg < COMPASS_NUM_DEGREES: String.format("Compass heading calculation is broken. degree is: %f",deg);
+
+		this.checkRep();
+
+		return deg;
+
   	}
 
 
@@ -140,7 +175,15 @@ public class GeoPoint {
      * 		   gp.latitude = this.latitude && gp.longitude = this.longitude
      **/
   	public boolean equals(Object gp) {
-  		// TODO Implement this method
+		this.checkRep();
+		if (gp == null)
+  			return false;
+  		if (!(gp instanceof GeoPoint))
+			return false;
+  		// at this point we know that gp != null and gp's type is GeoPoint
+		GeoPoint point = (GeoPoint)gp;
+		this.checkRep();
+		return (point.latitude == this.latitude) && (point.longitude == this.longitude);
   	}
 
 
@@ -151,8 +194,8 @@ public class GeoPoint {
   	public int hashCode() {
     	// This implementation will work, but you may want to modify it
     	// for improved performance.
-
-    	return 1;
+		this.checkRep();
+    	return this.longitude + this.latitude;
   	}
 
 
@@ -161,7 +204,18 @@ public class GeoPoint {
      * @return a string representation of this GeoPoint.
      **/
   	public String toString() {
-  		// TODO Implement this method
+		this.checkRep();
+		return String.format("Geo-Point: {Latitude: %f, Longitude: %f}",this.latitude/MILLION,this.longitude/MILLION);
   	}
+
+	/**
+	 * Checks if the Representation Invariant is being violated.
+	 * @throws AssertionError in case it's violated.
+	 **/
+	private void checkRep() {
+		assert this.latitude >= MIN_LATITUDE && this.latitude <= MAX_LATITUDE &&
+			   this.longitude >= MIN_LONGITUDE && this.longitude <= MAX_LONGITUDE:
+				"Rep. Invariant of GeoSegment is broken";
+	}
 
 }
