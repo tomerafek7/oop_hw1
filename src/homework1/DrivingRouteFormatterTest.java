@@ -17,13 +17,15 @@ public class DrivingRouteFormatterTest {
   	
   	public void test() {
 		String directions =
-			"Turn slight right onto Trumpeldor Avenue and go 0.7 kilometers.\n" +
-			"Turn left onto Hagalil and go 1.4 kilometers.\n";
-    
+				"Turn slight right onto Trumpeldor Avenue and go 0.7 kilometers.\n" +
+						"Turn left onto Hagalil and go 1.4 kilometers.\n";
+
 		if (mDirections.computeDirections(mShortRoute, 0).equals(directions))
 			System.out.println("Test passed correctly");
-		else
+		else {
 			System.out.println("Test not passed correctly");
+			System.out.println(mDirections.computeDirections(mShortRoute, 0));
+		}
 	}
   	
   	
