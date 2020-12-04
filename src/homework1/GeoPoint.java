@@ -27,15 +27,13 @@ package homework1;
  *   latitude :  real        // latitude measured in degrees
  *   longitude : real        // longitude measured in degrees
  * </pre>
- **/
-
-/** Abs. Function:
+ * <pre>
+ * <b>Abs. Function:</b>
  *  Represents a point on earth by latitude and longitude (in millionth of degrees)
- */
-
-/** Rep. Invariant:
+ * <b>Rep. Invariant:</b>
  * MIN_LATITUDE <= latitude <= MAX_LATITUDE) and
  * (MIN_LONGITUDE <= longitude <= MAX_LONGITUDE)
+ * </pre>
  */
 
 public class GeoPoint {

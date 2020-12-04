@@ -31,17 +31,17 @@ import java.util.ArrayList;
  *   length : real               // total length of the route, in kilometers
  *   endingGeoSegment : GeoSegment  // last GeoSegment of the route
  * </pre>
- * <p>
- * Abs. Function:
+ * <pre>
+ * <b>Abs. Function:</b>
  * Represents a route of one or more GeoSegments. holds the start&end points, start&end headings, the total length,
  * and a container of all segments.
- * <p>
- * Rep. Invariant:
+ * <b>Rep. Invariant:</b>
  * both end-points are not null
  * 0 <= startHeading, endHeading < 360
  * for each pair of subsequent segments, g1,g2, g2.start == g1.end
  * length = SUM(gs.length for each gs in list)
- **/
+ * </pre>
+ */
 
 public class Route {
 
