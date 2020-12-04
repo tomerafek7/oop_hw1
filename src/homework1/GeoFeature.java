@@ -45,9 +45,21 @@ public class GeoFeature {
 	// equality is needed, consider using the equals() method of List. More
 	// info can be found at:
 	//   http://docs.oracle.com/javase/8/docs/api/java/util/List.html
-	
-	
-  	// TODO Write abstraction function and representation invariant
+
+
+	/** Abs. Function:
+	 * Represents a collection of segments on earth, which have the same name .
+	 * holds the segments name, two endpoints, the sum of the all segments length,
+	 * between them and the compasses heading of the first and last segment,
+	 * and a list of all segments.
+	 */
+
+	/** Rep. Invariant:
+	 * both end-points are not null
+	 * name is not null
+	 * all segments are concatenated(i.e. a[i].p2=a[i+1].p1)
+	 *
+	 */
 
     final GeoPoint start, end ;         // location of the end of the geographic feature
     final double length, startHeading, endHeading;     // direction of travel at the end of the geographic feature, in degrees

@@ -1,4 +1,5 @@
 package homework1;
+import java.util.Iterator;
 
 
 /**
@@ -24,7 +25,14 @@ public abstract class RouteFormatter {
 		// feature in this route and concatenate the results into a single
 		// String.
   		
-  		// TODO Implement this method
+		String directions="";
+		double curr_heading = heading;
+		for (Iterator<GeoFeature> it = route.getGeoFeatures(); it.hasNext();){
+			GeoFeature current_feature= it.next();
+			directions.concat(computeLine(current_feature, curr_heading));
+			curr_heading = current_feature.getEndHeading();
+		}
+		return directions;
   	}
 
 
@@ -61,7 +69,24 @@ public abstract class RouteFormatter {
      * and likewise for left turns.
      */
   	protected String getTurnString(double origHeading, double newHeading) {
-  		// TODO Implement this method
-  	}
+		double direction = newHeading - origHeading > 0 ? newHeading - origHeading : 360 + newHeading - origHeading;
+		if (direction > 350 || direction < 10) {
+			return "Continue";
+		} else if (direction > 300) {
+			return "Turn slight left";
+		} else if (direction > 240) {
+			return "Turn left";
+		} else if (direction > 181) {
+			return "Turn sharp left";
+		} else if (direction > 179) {
+			return "U-turn";
+		} else if (direction > 120) {
+			return "Turn sharp right";
+		} else if (direction > 60) {
+			return "Turn right";
+		} else {
+			return "Turn slight right";
+		}
+	}
 
 }
