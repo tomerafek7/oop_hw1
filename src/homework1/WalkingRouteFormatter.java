@@ -1,6 +1,8 @@
 package homework1;
 
 import java.text.DecimalFormat;
+import java.util.Iterator;
+import java.lang.Math;
 
 /**
  * A WalkingDirections class knows how to create a textual description of
@@ -51,15 +53,39 @@ public class WalkingRouteFormatter extends RouteFormatter {
      * newline and should include no extra spaces other than those shown
      * above.
      **/
+
+  	final static int MIN_PER_KILOMETER = 20;
+
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
-  		
-		// Implementation hint:
-		// You may find the class java.text.DecimalFormat useful when
-		// implementing this method. More info can be found at:
-		// http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
-		// and at:
-		// http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
-					 
-  		// TODO Implement this method
-  	}
+		assert geoFeature != null && origHeading >= 0 && origHeading < 360:
+				"Can't build walking direction line: one (or more) input/s are null";
+		// handle first segment
+		String res_str = "";
+		double prev_heading = origHeading;
+		for (Iterator<GeoSegment> it = geoFeature.getGeoSegments(); it.hasNext(); ) {
+			GeoSegment seg = it.next();
+			res_str = res_str.concat(this.CreateLine(seg.getName(), prev_heading, seg.getHeading(), seg.getLength()));
+			prev_heading = seg.getHeading();
+		}
+		return res_str;
+	}
+
+	/**
+	 * Returns a string of a given line (segment)
+	 * @requires name != null
+	 * @return a string of a given line (segment)
+	 */
+	private String CreateLine(String name, double origHeading, double newHeading, double length){
+  		return this.getTurnString(origHeading, newHeading) + " onto " + name + " and walk for " +
+				this.GetMinutes(length) + " minutes.\n";
+	}
+
+	/**
+	 * Returns the time (in minutes) of walking the given length.
+	 * @return A string of the time (in minutes) of walking the given length.
+	 */
+	private String GetMinutes(double length){
+  		return String.valueOf(Math.round(length * MIN_PER_KILOMETER));
+	}
+
 }
