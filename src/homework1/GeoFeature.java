@@ -35,17 +35,20 @@ import java.util.ArrayList;
  *   name : String          // name of geographic feature
  *   length : real          // total length of the geographic feature, in kilometers
  * </pre>
- * 	/** Abs. Function:
- * 	 * Represents a collection of segments on earth, which have the same name .
- * 	 * holds the segments name, two endpoints, the sum of the all segments length,
- * 	 * between them and the compasses heading of the first and last segment,
- * 	 * and a list of all segments.
+ * <pre>
+ * <b>
+ *  Abs. Function:
+ * 	  Represents a collection of segments on earth, which have the same name .
+ * 	  holds the segments name, two endpoints, the sum of the all segments length,
+ * 	  between them and the compasses heading of the first and last segment,
+ * 	  and a list of all segments.
  *
  * Rep. Invariant:
- * 	 * both end-points are not null
- * 	 * name is not null
- * 	 * all segments are concatenated(i.e. a[i].p2=a[i+1].p1)
- *
+ * 	  both end-points are not null
+ * 	  name is not null
+ * 	  all segments are concatenated(i.e. a[i].p2=a[i+1].p1)
+ * </b>
+ * </pre>
  **/
 public class GeoFeature {
 	
