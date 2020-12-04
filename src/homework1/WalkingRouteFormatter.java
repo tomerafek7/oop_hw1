@@ -57,7 +57,8 @@ public class WalkingRouteFormatter extends RouteFormatter {
   	final static int MIN_PER_KILOMETER = 20;
 
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
-
+		assert geoFeature != null && origHeading >= 0 && origHeading < 360:
+				"Can't build walking direction line: one (or more) input/s are null";
 		// handle first segment
 		String res_str = "";
 		double prev_heading = origHeading;
