@@ -176,8 +176,8 @@ public class GeoSegment  {
      **/
   	public String toString() {
 		this.checkRep();
-  		return String.format("Geo-Segment: name: %s,\n p1: %s,\n p2: %s,\n length: %f,\n heading: %f,\n",
-				this.name,this.p1.toString(),this.p2.toString(),this.length,this.heading);
+  		return String.format("(\"%s\", %s, %s)\n",
+				this.name,this.p1.toString(),this.p2.toString());
   	}
 
 	/**

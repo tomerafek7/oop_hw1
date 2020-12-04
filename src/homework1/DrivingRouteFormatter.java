@@ -64,7 +64,7 @@ public class DrivingRouteFormatter extends RouteFormatter {
 		for (Iterator<GeoSegment> it = geoFeature.getGeoSegments(); it.hasNext();){
 			GeoSegment current_segment= it.next();
 			directions = directions.concat(getTurnString(curr_heading,current_segment.getHeading())).concat(String.format(" onto %s and go ",geoFeature.getName()));
-			String length = String.format("%.1f kilometers\n",current_segment.getLength());
+			String length = String.format("%.1f kilometers.\n",current_segment.getLength());
 			directions = directions.concat(length);
 			curr_heading = current_segment.getHeading();
 		}

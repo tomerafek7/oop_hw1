@@ -142,6 +142,9 @@ public class RouteFormatterGUI extends JPanel {
 	 * 			RouteDirection.computeDirections(this.route,0)
 	 */
 	public void addSegment(GeoSegment segment) {
+		assert segment != null:
+				"Can't add a Segment: one (or more) input/s are null";
+
 		DefaultListModel<GeoSegment> model =
 				(DefaultListModel<GeoSegment>)(this.lstSegments.getModel());
 		

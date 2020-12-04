@@ -205,7 +205,7 @@ public class GeoPoint {
      **/
   	public String toString() {
 		this.checkRep();
-		return String.format("Geo-Point: {Latitude: %f, Longitude: %f}",this.latitude/MILLION,this.longitude/MILLION);
+		return String.format("(%d,%d)",this.latitude,this.longitude);
   	}
 
 	/**
