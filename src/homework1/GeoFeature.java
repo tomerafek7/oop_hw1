@@ -80,7 +80,7 @@ public class GeoFeature {
 
   	public GeoFeature(GeoFeature gf,GeoSegment gs) {
             this.name = gf.getName();
-            this.startHeading = gf.getHeading();
+            this.startHeading = gf.getStartHeading();
             this.endHeading = gs.getHeading();
             this.start = gf.getStart();
             this.end = gs.getP2();
@@ -160,7 +160,8 @@ public class GeoFeature {
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
         assert gs != null && gs.getP1()!=this.end && gs.getName().equals(this.name):
-        return GeoFeature(this, gs);
+        "Can't build GeoFeature: one (or more) input/s are null" ;
+        return new GeoFeature(this, gs);
   	}
 
 
@@ -183,7 +184,7 @@ public class GeoFeature {
      * @see homework1.GeoSegment
      */
   	public Iterator<GeoSegment> getGeoSegments() {
-  		// TODO Implement this method
+        return this.geoSegments.iterator();
   	}
 
 
@@ -194,7 +195,12 @@ public class GeoFeature {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		// TODO Implement this method
+  		if (o == null)
+        	return false;
+        if (!(o instanceof GeoFeature))
+        	return false;
+        GeoFeature feature = (GeoFeature)o;
+        return this.geoSegments.equals(feature.geoSegments);
   	}
 
 
@@ -205,8 +211,7 @@ public class GeoFeature {
   	public int hashCode() {
     	// This implementation will work, but you may want to modify it
     	// improved performance.
-    	
-    	return 1;
+    	return (int)(this.length) + this.geoSegments.size();
   	}
 
 
@@ -215,6 +220,6 @@ public class GeoFeature {
    	 * @return a string representation of this.
      **/
   	public String toString() {
-  		// TODO Implement this method
+		return this.name;
   	}
 }
