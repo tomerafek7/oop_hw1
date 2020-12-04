@@ -95,7 +95,8 @@ public class GeoFeature {
       * @return name of geographic feature
       */
   	public String getName() {
-        return this.name;
+        this.checkRep();
+  		return this.name;
    	}
 
 
@@ -104,7 +105,8 @@ public class GeoFeature {
      * @return location of the start of the geographic feature.
      */
   	public GeoPoint getStart() {
-        return this.start;
+		this.checkRep();
+		return this.start;
   	}
 
 
@@ -113,7 +115,8 @@ public class GeoFeature {
      * @return location of the end of the geographic feature.
      */
   	public GeoPoint getEnd() {
-  	    return this.end;
+		this.checkRep();
+		return this.end;
   	}
 
 
@@ -123,7 +126,8 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getStartHeading() {
-  		return this.startHeading;
+		this.checkRep();
+		return this.startHeading;
   	}
 
 
@@ -133,7 +137,8 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getEndHeading() {
-        return this.endHeading;
+		this.checkRep();
+		return this.endHeading;
   	}
 
 
@@ -145,7 +150,8 @@ public class GeoFeature {
      *         values are not necessarily equal.
      */
   	public double getLength() {
-        return  this.length;
+		this.checkRep();
+		return this.length;
   	}
 
 
@@ -159,7 +165,8 @@ public class GeoFeature {
      *    	   r.length = this.length + gs.length
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
-        assert gs != null && gs.getP1()!=this.end && gs.getName().equals(this.name):
+		this.checkRep();
+		assert gs != null && gs.getP1()!=this.end && gs.getName().equals(this.name):
         "Can't build GeoFeature: one (or more) input/s are null" ;
         return new GeoFeature(this, gs);
   	}
@@ -195,7 +202,8 @@ public class GeoFeature {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		if (o == null)
+		this.checkRep();
+		if (o == null)
         	return false;
         if (!(o instanceof GeoFeature))
         	return false;
@@ -211,15 +219,38 @@ public class GeoFeature {
   	public int hashCode() {
     	// This implementation will work, but you may want to modify it
     	// improved performance.
-    	return (int)(this.length) + this.geoSegments.size();
+		this.checkRep();
+		return (int)(this.length) + this.geoSegments.size();
   	}
-
 
   	/**
   	 * Returns a string representation of this.
    	 * @return a string representation of this.
      **/
   	public String toString() {
+		this.checkRep();
 		return this.name;
   	}
+	/**
+	 * Checks if the Representation Invariant is being violated.
+	 * @throws AssertionError in case it's violated.
+	 **/
+	private void checkRep() {
+		assert this.name != null && this.length >= 0 :
+				"Rep. Invariant of GeoSegment is broken";
+		boolean valid = true;
+		GeoSegment old, next = null;
+		for (Iterator<GeoSegment> it = this.geoSegments.iterator(); it.hasNext(); ) {
+			old = next;
+			next = it.next();
+			if(old != null){
+				valid = valid && old.getP2().equals(next.getP1()) && this.name.equals(next.getName()) &&
+						(it.hasNext() || next.getP1().equals(this.start));
+			}else {
+				valid = valid && this.name.equals(next.getName()) && next.getP1().equals(this.start);
+			}
+		}
+		assert valid :
+		"Rep. Invariant of GeoSegment is broken";
+	}
 }
