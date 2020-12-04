@@ -1,8 +1,11 @@
 package homework1;
 
 import java.awt.Frame;
-import javax.swing.JDialog;
-import javax.swing.JList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import javax.swing.*;
+import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * A JDailog GUI for choosing a GeoSegemnt and adding it to the route shown
@@ -32,7 +35,65 @@ public class GeoSegmentsDialog extends JDialog {
 		super(owner, "Please choose a GeoSegment", true);
 		
 		this.parent = pnlParent;
-		
+
+		GeoSegmentsDialog dialog = this;
+
+		// Add Cancel Buttom
+		JButton btnCancel = new JButton("Cancel");
+		btnCancel.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				dialog.setVisible(false);
+			}
+		});
+		// Add "Add" Buttom
+		JButton btnAdd = new JButton("Add");
+		btnAdd.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+
+		GeoSegment[] list = ExampleGeoSegments.segments;
+		lstSegments = new JList<GeoSegment>(list);
+		lstSegments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrlSegments = new JScrollPane(lstSegments);
+		scrlSegments.setPreferredSize(new Dimension(600, 200));
+
+
+		// arrange components on grid
+		GridBagLayout gridbag = new GridBagLayout();
+		GridBagConstraints c = new GridBagConstraints();
+		this.setLayout(gridbag);
+
+
+		c.gridx = 0;
+		c.gridy = 1;
+		c.gridwidth = 1;
+		c.gridheight = 5;
+		c.insets = new Insets(20,20,20,20);
+		gridbag.setConstraints(scrlSegments, c);
+		this.add(scrlSegments);
+
+
+		c.gridx = 0;
+		c.gridy = 20;
+		c.gridwidth = 2;
+		c.gridheight = 2;
+		c.insets = new Insets(20,0,20,20);
+		c.anchor = GridBagConstraints.EAST;
+		gridbag.setConstraints(btnCancel, c);
+		this.add(btnCancel);
+
+		c.gridx = 0;
+		c.gridy = 20;
+		c.gridwidth = 1;
+		c.gridheight = 1;
+		c.insets = new Insets(20,20,20,0);
+		c.anchor = GridBagConstraints.WEST;
+		gridbag.setConstraints(btnAdd, c);
+		this.add(btnAdd);
+
+
+
 		// TODO Write the body of this method
 	}
 }
