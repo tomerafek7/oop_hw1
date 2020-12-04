@@ -113,6 +113,8 @@ public class Route {
 			} else {
 				this.geoFeatures.add(feature);
 			}
+			if (!name_found)
+				this.geoFeatures.add(new GeoFeature(gs));
 
 		}
 

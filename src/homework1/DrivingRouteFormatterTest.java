@@ -22,8 +22,10 @@ public class DrivingRouteFormatterTest {
     
 		if (mDirections.computeDirections(mShortRoute, 0).equals(directions))
 			System.out.println("Test passed correctly");
-		else
+		else {
 			System.out.println("Test not passed correctly");
+			System.out.println(mDirections.computeDirections(mShortRoute, 0));
+		}
 	}
   	
   	
