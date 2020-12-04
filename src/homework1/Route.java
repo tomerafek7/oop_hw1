@@ -1,6 +1,7 @@
 package homework1;
 
 import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * A Route is a path that traverses arbitrary GeoSegments, regardless
@@ -33,8 +34,27 @@ import java.util.Iterator;
  **/
 public class Route {
 
-	
- 	// TODO Write abstraction function and representation invariant
+
+	final GeoPoint start, end;
+	final double startHeading, endHeading;
+	final ArrayList<GeoFeature> geoFeatures;
+	final ArrayList<GeoSegment> geoSegments;
+	final double length;
+	final GeoSegment endingGeoSegment;
+
+
+	/** Abs. Function:
+	 * Represents a route of one or more GeoSegments. holds the start&end points, start&end headings, the total length,
+	 * and a container of all segments.
+	 */
+
+	/** Rep. Invariant:
+	 * both end-points are not null
+	 * 0 <= startHeading, endHeading < 360
+	 * for each pair of subsequent segments, g1,g2, g2.start == g1.end
+	 * length = SUM(gs.length for each gs in list)
+	 * All GeoFeatures have unique names
+	 */
 
 
   	/**
@@ -47,16 +67,67 @@ public class Route {
      *          r.end = gs.p2
      **/
   	public Route(GeoSegment gs) {
-  		// TODO Implement this constructor
-  	}
+  		assert gs != null : "Canont Create Route: the given GeoSegment = null";
+		this.start = gs.getP1();
+		this.end = gs.getP2();
+  		this.startHeading = gs.getHeading();
+  		this.endHeading = gs.getHeading();
+  		this.geoFeatures = new ArrayList<>();
+  		this.geoFeatures.add(new GeoFeature(gs));
+  		this.geoSegments = new ArrayList<>();
+		this.geoSegments.add(gs);
+		this.length = gs.getLength();
+		this.endingGeoSegment = gs;
+		this.checkRep();
 
+	}
+
+	/**
+	 * Constructs a new Route from an existing Route & A GeoSegment to append.
+	 * @requires r!=null && gs != null
+	 * @effects Constructs a new Route, r, such that
+	 *	        new_r.startHeading = r.startHeading &&
+	 *          new_r.endHeading = gs.heading &&
+	 *          new_r.start = r.start &&
+	 *          new_r.end = gs.p2
+	 **/
+	private Route(Route r, GeoSegment gs) {
+		assert gs != null && r != null : "Canont Create Route: one or more null parameters";
+		this.start = r.getStart();
+		this.end = gs.getP2();
+		this.startHeading = r.getStartHeading();
+		this.endHeading = gs.getHeading();
+		this.endingGeoSegment = gs;
+		this.length = r.getLength() + gs.getLength(); // length calc:
+		this.geoSegments = new ArrayList<>(r.geoSegments);
+		this.geoFeatures = new ArrayList<>();
+		// running through all features of r, and check if a feature groups with gs's name already exists :
+		boolean name_found = false;
+		for (Iterator<GeoFeature> it = r.getGeoFeatures(); it.hasNext(); ) {
+			GeoFeature feature = it.next();
+			if (feature.getName().equals(gs.getName())) {
+				assert !name_found: "Cannot create route: there are two different features with the same name";
+				name_found = true;
+				GeoFeature new_feature = feature.addSegment(gs);
+				this.geoFeatures.add(new_feature);
+			} else {
+				this.geoFeatures.add(feature);
+			}
+
+		}
+
+		// adding the last segment to the list:
+		this.geoSegments.add(gs);
+		this.checkRep();
+	}
 
     /**
      * Returns location of the start of the route.
      * @return location of the start of the route.
      **/
   	public GeoPoint getStart() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.start;
   	}
 
 
@@ -65,7 +136,8 @@ public class Route {
      * @return location of the end of the route.
      **/
   	public GeoPoint getEnd() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.end;
   	}
 
 
@@ -75,7 +147,8 @@ public class Route {
    	 *         route, in degrees.
    	 **/
   	public double getStartHeading() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.startHeading;
   	}
 
 
@@ -85,7 +158,8 @@ public class Route {
      *         route, in degrees.
      **/
   	public double getEndHeading() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.endHeading;
   	}
 
 
@@ -96,7 +170,8 @@ public class Route {
      *         traverse the route. These values are not necessarily equal.
    	 **/
   	public double getLength() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.length;
   	}
 
 
@@ -110,8 +185,11 @@ public class Route {
      *         r.length = this.length + gs.length
      **/
   	public Route addSegment(GeoSegment gs) {
-  		// TODO Implement this method
-  	}
+		this.checkRep();
+		assert gs != null: "Canont Create Route: the given GeoSegment = null";
+  		assert gs.getP1().equals(this.end): "Cannot Add Segment: gs.p1 != this.end";
+		return new Route(this, gs); // calling (private) C'tor.
+	}
 
 
     /**
@@ -133,7 +211,8 @@ public class Route {
      * @see homework1.GeoFeature
      **/
   	public Iterator<GeoFeature> getGeoFeatures() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.geoFeatures.iterator();
   	}
 
 
@@ -152,7 +231,8 @@ public class Route {
      * @see homework1.GeoSegment
      **/
   	public Iterator<GeoSegment> getGeoSegments() {
-  		// TODO Implement this method
+		this.checkRep();
+		return this.geoSegments.iterator();
   	}
 
 
@@ -163,7 +243,15 @@ public class Route {
      *          the same elements in the same order).
      **/
   	public boolean equals(Object o) {
-  		// TODO Implement this method
+		this.checkRep();
+		if (o == null)
+			return false;
+		if (!(o instanceof Route))
+			return false;
+		// at this point we know that o != null and o's type is GeoPoint
+		Route route = (Route)o;
+		this.checkRep();
+		return this.geoFeatures.equals(route.geoFeatures);
   	}
 
 
@@ -172,18 +260,48 @@ public class Route {
      * @return a hash code for this.
      **/
   	public int hashCode() {
-    	// This implementation will work, but you may want to modify it
-    	// for improved performance.
-
-    	return 1;
+    	return (int)this.getLength();
   	}
-
 
     /**
      * Returns a string representation of this.
      * @return a string representation of this.
      **/
   	public String toString() {
+  		return String.format("Route: \n start: %s \n end: %s \n startHeading: %f \n endHeading: %f \n",
+				this.start.toString(), this.end.toString(), this.startHeading, this.endHeading);
   	}
+
+	/**
+	 * Checks if the Representation Invariant is being violated.
+	 * @throws AssertionError in case it's violated.
+	 **/
+	private void checkRep() {
+		assert this.start != null && this.end != null
+				&& this.startHeading < GeoPoint.COMPASS_NUM_DEGREES && this.startHeading >= 0
+				&& this.endHeading < GeoPoint.COMPASS_NUM_DEGREES && this.endHeading >= 0 :
+				"Rep. Invariant of Route is broken";
+		double length_sum = 0;
+		GeoPoint prev_endpoint = null;
+		for (GeoSegment seg : this.geoSegments) {
+			if (prev_endpoint != null) {
+				assert seg.getP1().equals(prev_endpoint) : "Rep. Invariant of Route is broken";
+			}
+			prev_endpoint = seg.getP2();
+			length_sum += seg.getLength();
+		}
+		assert length_sum == this.length: "Rep. Invariant of Route is broken";
+
+		// check that all GeoFeatures have unique names:
+		ArrayList<String> names_list = new ArrayList<>();
+		for (GeoFeature fe : this.geoFeatures){
+			String cur_name = fe.getName();
+			assert !names_list.contains(cur_name): "Rep. Invariant of Route is broken: " +
+													"Two different GeoFeatures have identical names";
+			names_list.add(cur_name);
+		}
+
+
+	}
 
 }
