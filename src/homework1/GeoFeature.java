@@ -1,6 +1,7 @@
 package homework1;
 
 import java.util.Iterator;
+import java.util.ArrayList;
 
 /**
  * A GeoFeature represents a route from one location to another along a
@@ -48,7 +49,11 @@ public class GeoFeature {
 	
   	// TODO Write abstraction function and representation invariant
 
-	
+    final GeoPoint start, end ;         // location of the end of the geographic feature
+    final double length, startHeading, endHeading;     // direction of travel at the end of the geographic feature, in degrees
+    final ArrayList<GeoSegment> geoSegments; 	// a sequence of segments that make up this geographic feature
+    final String name;          // name of geographic feature
+
 	/**
      * Constructs a new GeoFeature.
      * @requires gs != null
@@ -60,8 +65,29 @@ public class GeoFeature {
      *          r.end = gs.p2
      **/
   	public GeoFeature(GeoSegment gs) {
-  		// TODO Implement this constructor
+        assert gs != null:
+        "Can't build GeoFeature: one (or more) input/s are null" ;
+        this.name = gs.getName();
+        this.startHeading = gs.getHeading();
+        this.endHeading = gs.getHeading();
+        this.start = gs.getP1();
+        this.end = gs.getP2();
+        this.length = gs.getLength();
+        this.geoSegments = new ArrayList<GeoSegment>();
+        this.geoSegments.add(gs);
   	}
+
+
+  	public GeoFeature(GeoFeature gf,GeoSegment gs) {
+            this.name = gf.getName();
+            this.startHeading = gf.getHeading();
+            this.endHeading = gs.getHeading();
+            this.start = gf.getStart();
+            this.end = gs.getP2();
+            this.length = gf.getLength() + gs.getLength();
+            this.geoSegments = new ArrayList<GeoSegment>(gf.geoSegments);
+            this.geoSegments.add(gs);
+      	}
   
 
  	/**
@@ -69,8 +95,8 @@ public class GeoFeature {
       * @return name of geographic feature
       */
   	public String getName() {
-  		// TODO Implement this method
-  	}
+        return this.name;
+   	}
 
 
   	/**
@@ -78,7 +104,7 @@ public class GeoFeature {
      * @return location of the start of the geographic feature.
      */
   	public GeoPoint getStart() {
-  		// TODO Implement this method
+        return this.start;
   	}
 
 
@@ -87,7 +113,7 @@ public class GeoFeature {
      * @return location of the end of the geographic feature.
      */
   	public GeoPoint getEnd() {
-  		// TODO Implement this method
+  	    return this.end;
   	}
 
 
@@ -97,7 +123,7 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getStartHeading() {
-  		// TODO Implement this method
+  		return this.startHeading;
   	}
 
 
@@ -107,7 +133,7 @@ public class GeoFeature {
      *         geographic feature, in degrees.
      */
   	public double getEndHeading() {
-  		// TODO Implement this method
+        return this.endHeading;
   	}
 
 
@@ -119,7 +145,7 @@ public class GeoFeature {
      *         values are not necessarily equal.
      */
   	public double getLength() {
-  		// TODO Implement this method
+        return  this.length;
   	}
 
 
@@ -133,7 +159,8 @@ public class GeoFeature {
      *    	   r.length = this.length + gs.length
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
-  		// TODO Implement this method
+        assert gs != null && gs.getP1()!=this.end && gs.getName().equals(this.name):
+        return GeoFeature(this, gs);
   	}
 
 
