@@ -53,7 +53,6 @@ public class Route {
 	 * 0 <= startHeading, endHeading < 360
 	 * for each pair of subsequent segments, g1,g2, g2.start == g1.end
 	 * length = SUM(gs.length for each gs in list)
-	 * All GeoFeatures have unique names
 	 */
 
 
@@ -100,26 +99,24 @@ public class Route {
 		this.endingGeoSegment = gs;
 		this.length = r.getLength() + gs.getLength(); // length calc:
 		this.geoSegments = new ArrayList<>(r.geoSegments);
-		this.geoFeatures = new ArrayList<>();
-		// running through all features of r, and check if a feature groups with gs's name already exists :
-		boolean name_found = false;
-		for (Iterator<GeoFeature> it = r.getGeoFeatures(); it.hasNext(); ) {
-			GeoFeature feature = it.next();
-			if (feature.getName().equals(gs.getName())) {
-				assert !name_found: "Cannot create route: there are two different features with the same name";
-				name_found = true;
-				GeoFeature new_feature = feature.addSegment(gs);
-				this.geoFeatures.add(new_feature);
-			} else {
-				this.geoFeatures.add(feature);
-			}
-			if (!name_found)
-				this.geoFeatures.add(new GeoFeature(gs));
-
-		}
-
 		// adding the last segment to the list:
 		this.geoSegments.add(gs);
+		this.geoFeatures = new ArrayList<>();
+		// running through all features of r:
+		for (Iterator<GeoFeature> it = r.getGeoFeatures(); it.hasNext(); ) {
+			GeoFeature feature = it.next();
+			if (it.hasNext()) { // not last element - just add the feature as is
+				this.geoFeatures.add(feature);
+			} else { // last element - check if the name is similar
+				if (feature.getName().equals(gs.getName())) { // same name --> append gs to the last feature
+					this.geoFeatures.add(feature.addSegment(gs));
+				} else { // different name --> just add the feature as is and append new different feature with gs
+					this.geoFeatures.add(feature);
+					this.geoFeatures.add(new GeoFeature(gs));
+				}
+			}
+		}
+
 		this.checkRep();
 	}
 
@@ -294,16 +291,6 @@ public class Route {
 		}
 		assert length_sum == this.length: "Rep. Invariant of Route is broken";
 
-		// check that all GeoFeatures have unique names:
-		ArrayList<String> names_list = new ArrayList<>();
-		for (GeoFeature fe : this.geoFeatures){
-			String cur_name = fe.getName();
-			assert !names_list.contains(cur_name): "Rep. Invariant of Route is broken: " +
-													"Two different GeoFeatures have identical names";
-			names_list.add(cur_name);
 		}
-
-
-	}
 
 }

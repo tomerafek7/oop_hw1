@@ -178,8 +178,8 @@ public class GeoFeature {
      **/
   	public GeoFeature addSegment(GeoSegment gs) {
 		this.checkRep();
-		assert gs != null && gs.getP1()!=this.end && gs.getName().equals(this.name):
-        "Can't build GeoFeature: one (or more) input/s are null" ;
+		assert gs != null && gs.getP1().equals(this.end) && gs.getName().equals(this.name):
+        "Can't add segment to GeoFeature: one (or more) input/s are null" ;
         return new GeoFeature(this, gs);
   	}
 
@@ -249,7 +249,7 @@ public class GeoFeature {
 	 **/
 	private void checkRep() {
 		assert this.name != null && this.length >= 0 :
-				"Rep. Invariant of GeoSegment is broken";
+				"Rep. Invariant of GeoFeature is broken";
 		boolean valid = true;
 		GeoSegment old, next = null;
 		for (Iterator<GeoSegment> it = this.geoSegments.iterator(); it.hasNext(); ) {
@@ -257,12 +257,12 @@ public class GeoFeature {
 			next = it.next();
 			if(old != null){
 				valid = valid && old.getP2().equals(next.getP1()) && this.name.equals(next.getName()) &&
-						(it.hasNext() || next.getP1().equals(this.start));
+						(it.hasNext() || next.getP2().equals(this.end));
 			}else {
 				valid = valid && this.name.equals(next.getName()) && next.getP1().equals(this.start);
 			}
 		}
 		assert valid :
-		"Rep. Invariant of GeoSegment is broken";
+		"Rep. Invariant of GeoFeature is broken";
 	}
 }

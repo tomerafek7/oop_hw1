@@ -38,6 +38,13 @@ public class GeoSegmentsDialog extends JDialog {
 
 		GeoSegmentsDialog dialog = this;
 
+		// Add Segments List
+		GeoSegment[] list = ExampleGeoSegments.segments;
+		lstSegments = new JList<GeoSegment>(list);
+		lstSegments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		JScrollPane scrlSegments = new JScrollPane(lstSegments);
+		scrlSegments.setPreferredSize(new Dimension(600, 200));
+
 		// Add Cancel Buttom
 		JButton btnCancel = new JButton("Cancel");
 		btnCancel.addActionListener(new ActionListener() {
@@ -49,15 +56,12 @@ public class GeoSegmentsDialog extends JDialog {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-//				pnlParent.addSegment();
+				pnlParent.addSegment(lstSegments.getSelectedValue());
+				dialog.setVisible(false);
 			}
 		});
 
-		GeoSegment[] list = ExampleGeoSegments.segments;
-		lstSegments = new JList<GeoSegment>(list);
-		lstSegments.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		JScrollPane scrlSegments = new JScrollPane(lstSegments);
-		scrlSegments.setPreferredSize(new Dimension(600, 200));
+
 
 
 		// arrange components on grid

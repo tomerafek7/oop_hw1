@@ -147,8 +147,19 @@ public class RouteFormatterGUI extends JPanel {
 
 		DefaultListModel<GeoSegment> model =
 				(DefaultListModel<GeoSegment>)(this.lstSegments.getModel());
-		
-		// TODO Write the body of this method
+
+		if (this.route == null){
+			route = new Route(segment);
+		} else {
+			route = route.addSegment(segment);
+		}
+
+		WalkingRouteFormatter walking_formatter = new WalkingRouteFormatter();
+		DrivingRouteFormatter driving_formatter = new DrivingRouteFormatter();
+		this.txtWalkingDirections.setText(walking_formatter.computeDirections(this.route,0));
+		this.txtDrivingDirections.setText(driving_formatter.computeDirections(this.route,0));
+		model.addElement(segment);
+
 	}
 
 
