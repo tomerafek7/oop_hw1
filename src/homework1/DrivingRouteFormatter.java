@@ -1,6 +1,7 @@
 package homework1;
 
 import java.text.DecimalFormat;
+import java.util.Iterator;
 
 /**
  * The DrivingDirections class creates a textual description of directions
@@ -50,15 +51,23 @@ public class DrivingRouteFormatter extends RouteFormatter {
      * above.
      **/
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
-  		
+  		assert geoFeature != null && origHeading >= 0 && origHeading < 360:
+				"Can't build driving direction line: one (or more) input/s are null";
   		// Implementation hint:
 		// You may find the class java.text.DecimalFormat useful when
 		// implementing this method. More info can be found at:
   	    // http://docs.oracle.com/javase/tutorial/java/data/numberformat.html
   		// and at:
   		// http://docs.oracle.com/javase/8/docs/api/java/text/DecimalFormat.html
-		   		
-  		// TODO Implement this method
-  	}
+		String directions="";
+		double curr_heading = origHeading;
+		for (Iterator<GeoSegment> it = geoFeature.getGeoSegments(); it.hasNext();){
+			GeoSegment current_segment= it.next();
+			directions = directions.concat(getTurnString(curr_heading,current_segment.getHeading())).concat(String.format(" onto %s and go ",geoFeature.getName()));
+			String length = String.format(".1%f kilometers\n",current_segment.getLength());
+			directions = directions.concat(length);
+			curr_heading = current_segment.getHeading();
+		}
+		return directions;  	}
 
 }
