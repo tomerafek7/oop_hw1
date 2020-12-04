@@ -28,6 +28,16 @@ package homework1;
  *   longitude : real        // longitude measured in degrees
  * </pre>
  **/
+
+/** Abs. Function:
+ *  Represents a point on earth by latitude and longitude (in millionth of degrees)
+ */
+
+/** Rep. Invariant:
+ * MIN_LATITUDE <= latitude <= MAX_LATITUDE) and
+ * (MIN_LONGITUDE <= longitude <= MAX_LONGITUDE)
+ */
+
 public class GeoPoint {
 
 	/** Minimum value the latitude field can have in this class. **/
@@ -69,15 +79,6 @@ public class GeoPoint {
 	// and distance computations). Because of this, you should consider 
 	// using ints for your internal representation of GeoPoint. 
 
-
-	/** Abs. Function:
-	 *  Represents a point on earth by latitude and longitude (in millionth of degrees)
-	 */
-
-	/** Rep. Invariant:
-	 * MIN_LATITUDE <= latitude <= MAX_LATITUDE) and
-	 * (MIN_LONGITUDE <= longitude <= MAX_LONGITUDE)
-	 */
 
 	final int latitude, longitude;
 

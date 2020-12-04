@@ -68,6 +68,7 @@ public class DrivingRouteFormatter extends RouteFormatter {
 			directions = directions.concat(length);
 			curr_heading = current_segment.getHeading();
 		}
-		return directions;  	}
+		return directions;
+  	}
 
 }
