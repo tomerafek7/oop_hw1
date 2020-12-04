@@ -38,21 +38,22 @@ package homework1;
  *   length : real       // straight-line distance between p1 and p2, in kilometers
  *   heading : angle     // compass heading from p1 to p2, in degrees
  * </pre>
- **/
+ *
+ *  Abs. Function:
+ * Represents a segment of two points on earth. holds the two endpoints, the distance between them and the
+ * compass heading from the first to the second.
+ *
+ * Rep. Invariant:
+ * both end-points are not null
+ * name is not null
+ * 0 <= heading < 360
+ * length >=0
+ */
+
 public class GeoSegment  {
 
 
-	/** Abs. Function:
-	 * Represents a segment of two points on earth. holds the two endpoints, the distance between them and the
-	 * compass heading from the first to the second.
-	 */
 
-	/** Rep. Invariant:
-	 * both end-points are not null
-	 * name is not null
-	 * 0 <= heading < 360
-	 * length >=0
-	 */
 
 
 	final String name;
