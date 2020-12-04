@@ -29,7 +29,7 @@ public abstract class RouteFormatter {
 		double curr_heading = heading;
 		for (Iterator<GeoFeature> it = route.getGeoFeatures(); it.hasNext();){
 			GeoFeature current_feature= it.next();
-			directions.concat(computeLine(current_feature, curr_heading));
+			directions = directions.concat(computeLine(current_feature, curr_heading));
 			curr_heading = current_feature.getEndHeading();
 		}
 		return directions;
