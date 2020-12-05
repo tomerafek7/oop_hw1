@@ -90,7 +90,16 @@ public class GeoFeature {
         this.geoSegments.add(gs);
   	}
 
-
+	/**
+	 * Constructs a new GeoFeature, out of a given GeoFeature and a new GeoSegment
+	 * @requires gs != null && gf != null && gs.name == gf.name
+	 * @effects Constructs a new GeoFeature, r, such that
+	 *	        r.name = gf.name &&
+	 *          r.startHeading = gf.heading &&
+	 *          r.endHeading = gs.heading &&
+	 *          r.start = gf.p1 &&
+	 *          r.end = gs.p2
+	 **/
   	public GeoFeature(GeoFeature gf,GeoSegment gs) {
             this.name = gf.getName();
             this.startHeading = gf.getStartHeading();
