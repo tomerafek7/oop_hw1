@@ -57,7 +57,7 @@ public class GeoSegmentsDialog extends JDialog {
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				pnlParent.addSegment(lstSegments.getSelectedValue());
-				dialog.setVisible(false);
+//				dialog.setVisible(false);
 			}
 		});
 

@@ -77,7 +77,12 @@ public class GeoSegment  {
   		this.p1 = p1;
   		this.p2 = p2;
   		this.length = p1.distanceTo(p2);
-  		this.heading = p1.headingTo(p2);
+  		if (this.length == 0){
+  			this.heading = -1;
+		}
+  		else {
+			this.heading = p1.headingTo(p2);
+		}
   		 this.checkRep();
   	}
 
@@ -133,19 +138,16 @@ public class GeoSegment  {
 		return this.length;
   	}
 
-
-  	/**
-  	 * Returns the compass heading from p1 to p2.
-     * @requires this.length != 0
-     * @return the compass heading from p1 to p2, in degrees, using the
-     *         flat-surface, near the Technion approximation.
-     **/
-  	public double getHeading() {
+	/**
+	 * Returns the compass heading from p1 to p2.
+	 * @return the compass heading from p1 to p2, in degrees, using the
+	 *         flat-surface, near the Technion approximation.
+	 *         if p1.equals(p2), will return -1
+	 **/
+	public double getHeading() {
 		this.checkRep();
-  		assert this.length != 0 : "Cannot return heading: length = 0";
 		return this.heading;
   	}
-
 
   	/**
      * Compares the specified Object with this GeoSegment for equality.

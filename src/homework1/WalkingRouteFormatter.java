@@ -59,15 +59,7 @@ public class WalkingRouteFormatter extends RouteFormatter {
   	public String computeLine(GeoFeature geoFeature, double origHeading) {
 		assert geoFeature != null && origHeading >= 0 && origHeading < 360:
 				"Can't build walking direction line: one (or more) input/s are null";
-		// handle first segment
-		String res_str = "";
-		double prev_heading = origHeading;
-		for (Iterator<GeoSegment> it = geoFeature.getGeoSegments(); it.hasNext(); ) {
-			GeoSegment seg = it.next();
-			res_str = res_str.concat(this.CreateLine(seg.getName(), prev_heading, seg.getHeading(), seg.getLength()));
-			prev_heading = seg.getHeading();
-		}
-		return res_str;
+		return this.CreateLine(geoFeature.getName(), origHeading, geoFeature.getStartHeading(), geoFeature.getLength());
 	}
 
 	/**

@@ -92,8 +92,18 @@ public class Route {
 		assert gs != null && r != null : "Canont Create Route: one or more null parameters";
 		this.start = r.getStart();
 		this.end = gs.getP2();
-		this.startHeading = r.getStartHeading();
-		this.endHeading = gs.getHeading();
+		// if r's segments are all in length = 0, start heading will be gs.heading():
+		if (r.getStartHeading() == -1){
+			this.startHeading = gs.getHeading();
+		} else{
+			this.startHeading = r.getStartHeading();
+		}
+		// if gs is in length = 0, end heading will be r.endHeading:
+		if (gs.getHeading() == -1){
+			this.endHeading = r.getEndHeading();
+		} else{
+			this.endHeading = gs.getHeading();
+		}
 		this.endingGeoSegment = gs;
 		this.length = r.getLength() + gs.getLength(); // length calc:
 		this.geoSegments = new ArrayList<>(r.geoSegments);
@@ -138,22 +148,24 @@ public class Route {
   	}
 
 
-  	/**
-  	 * Returns direction of travel at the start of the route, in degrees.
-   	 * @return direction (in compass heading) of travel at the start of the
-   	 *         route, in degrees.
-   	 **/
+	/**
+	 * Returns direction of travel at the start of the route, in degrees.
+	 * @return direction (in compass heading) of travel at the first
+	 * non-zero-length segment of the route, in degrees.
+	 * if all segments are zero-length, will return -1.
+	 **/
   	public double getStartHeading() {
 		this.checkRep();
 		return this.startHeading;
   	}
 
 
-  	/**
-  	 * Returns direction of travel at the end of the route, in degrees.
-     * @return direction (in compass heading) of travel at the end of the
-     *         route, in degrees.
-     **/
+	/**
+	 * Returns direction of travel at the end of the route, in degrees.
+	 * @return direction (in compass heading) of travel at the last
+	 * non-zero-length segment of the route, in degrees.
+	 * if all segments are zero-length, will return -1.
+	 **/
   	public double getEndHeading() {
 		this.checkRep();
 		return this.endHeading;

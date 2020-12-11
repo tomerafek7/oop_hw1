@@ -101,15 +101,25 @@ public class GeoFeature {
 	 *          r.end = gs.p2
 	 **/
   	public GeoFeature(GeoFeature gf,GeoSegment gs) {
-            this.name = gf.getName();
-            this.startHeading = gf.getStartHeading();
-            this.endHeading = gs.getHeading();
-            this.start = gf.getStart();
-            this.end = gs.getP2();
-            this.length = gf.getLength() + gs.getLength();
-            this.geoSegments = new ArrayList<GeoSegment>(gf.geoSegments);
-            this.geoSegments.add(gs);
-      	}
+		this.name = gf.getName();
+		// if gf's segments are all in length = 0, start heading will be gs.heading():
+		if (gf.getStartHeading() == -1){
+			this.startHeading = gs.getHeading();
+		} else{
+			this.startHeading = gf.getStartHeading();
+		}
+		// if gs is in length = 0, end heading will be gf.endHeading:
+		if (gs.getHeading() == -1){
+			this.endHeading = gf.getEndHeading();
+		} else{
+			this.endHeading = gs.getHeading();
+		}
+		this.start = gf.getStart();
+		this.end = gs.getP2();
+		this.length = gf.getLength() + gs.getLength();
+		this.geoSegments = new ArrayList<GeoSegment>(gf.geoSegments);
+		this.geoSegments.add(gs);
+	}
   
 
  	/**
@@ -142,22 +152,24 @@ public class GeoFeature {
   	}
 
 
-  	/**
-  	 * Returns direction of travel at the start of the geographic feature.
-     * @return direction (in standard heading) of travel at the start of the
-     *         geographic feature, in degrees.
-     */
+	/**
+	 * Returns direction of travel at the start of the geographic feature, in degrees.
+	 * @return direction (in compass heading) of travel at the first
+	 * non-zero-length segment of the geographic feature, in degrees
+	 * if all segments are zero-length, will return -1.
+	 **/
   	public double getStartHeading() {
 		this.checkRep();
 		return this.startHeading;
   	}
 
 
-  	/**
-  	 * Returns direction of travel at the end of the geographic feature.
-     * @return direction (in standard heading) of travel at the end of the
-     *         geographic feature, in degrees.
-     */
+	/**
+	 * Returns direction of travel at the end of the geographic feature, in degrees.
+	 * @return direction (in compass heading) of travel at the last
+	 * non-zero-length segment of the geographic feature, in degrees.
+	 * * if all segments are zero-length, will return -1.
+	 **/
   	public double getEndHeading() {
 		this.checkRep();
 		return this.endHeading;
